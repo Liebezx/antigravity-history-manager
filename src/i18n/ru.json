@@ -1,0 +1,188 @@
+{
+  "app": {
+    "title": "Antigravity History Manager",
+    "brand_name": "History Manager",
+    "section_title": "Диалоги"
+  },
+  "card": {
+    "steps_label": "шагов",
+    "untitled": "Без названия"
+  },
+  "status": {
+    "connected": "Подключено к Antigravity",
+    "db_only": "Antigravity не запущен: показана база",
+    "cli_missing": "aghistory не найден",
+    "antigravity_missing": "База не найдена",
+    "demo": "Демо-режим",
+    "running": "Выполняется экспорт...",
+    "ready": "Готов к работе"
+  },
+  "header": {
+    "lang_toggle_title": "Переключить язык (RU / EN)",
+    "log_btn": "Журнал",
+    "log_btn_title": "Открыть журнал выполнения (консоль)",
+    "menu_btn_title": "Дополнительные действия"
+  },
+  "menu": {
+    "server_status": "Статус сервера",
+    "export_by_id": "Экспорт по ID...",
+    "recover": "Восстановить из .db...",
+    "open_db_folder": "Открыть папку баз данных",
+    "settings": "Настройки",
+    "about": "О программе"
+  },
+  "search": {
+    "placeholder": "Поиск по названию или ID...",
+    "clear_title": "Очистить поиск (Esc)",
+    "refresh_title": "Обновить список диалогов (F5)"
+  },
+  "source": {
+    "live": "{count} · источник: live",
+    "db_only": "{count} · источник: из .db"
+  },
+  "table": {
+    "col_title": "НАЗВАНИЕ ДИАЛОГА",
+    "col_steps": "ШАГОВ",
+    "col_modified": "ИЗМЕНЁН",
+    "select_all_title": "Выбрать все (Ctrl+A)",
+    "copy_id_title": "Нажмите, чтобы скопировать полный UUID",
+    "empty_search": "Ничего не найдено по запросу",
+    "empty_list": "Диалоги не найдены",
+    "loading": "Чтение базы диалогов...",
+    "no_title": "Без названия"
+  },
+  "bar": {
+    "selected_zero": "0 из {total}",
+    "select_all": "Выбрать все",
+    "clear_selection": "Снять выбор",
+    "folder_label": "Папка:",
+    "browse_title": "Выбрать другую папку для экспорта",
+    "open_folder_title": "Открыть папку в Проводнике",
+    "format_label": "Формат:",
+    "format_all": "MD + JSON",
+    "format_md": "Markdown (.md)",
+    "format_json": "JSON (.json)",
+    "options": "Опции",
+    "options_title": "Дополнительные параметры выгрузки",
+    "export_all_btn": "Экспортировать все ({count})",
+    "export_selected_btn": "Экспортировать выбранные ({count})"
+  },
+  "options": {
+    "title": "Опции экспорта",
+    "organize_folders": "Раскладывать по папкам",
+    "organize_folders_desc": "Создавать отдельную папку для каждого чата",
+    "thinking": "Включить рассуждения модели",
+    "thinking_desc": "Добавляет CoT и ход мыслей модели",
+    "full": "Полные diff и вывод",
+    "full_desc": "Полный дамп данных без сокращений",
+    "today": "Только за сегодня",
+    "today_desc": "Выгружать диалоги только за сегодняшнее число",
+    "sound": "Звук по окончании экспорта",
+    "sound_desc": "Звуковой сигнал при завершении выгрузки",
+    "sound_volume": "Громкость",
+    "test_sound": "Проверить звук"
+  },
+  "progress": {
+    "exporting": "Экспорт {current} из {total}...",
+    "exporting_all": "Экспорт всех диалогов ({total})...",
+    "stopping": "Прерывание процесса...",
+    "stop_btn": "Прервать",
+    "view_log": "Показать журнал",
+    "done": "Готово: сохранено",
+    "done_open_folder": "Открыть папку",
+    "done_close": "Закрыть",
+    "error": "Ошибка при экспорте",
+    "view_details": "Показать детали"
+  },
+  "drawer": {
+    "title": "Журнал выполнения",
+    "copy": "Копировать",
+    "clear": "Очистить",
+    "close": "Скрыть"
+  },
+  "missing_cli": {
+    "title": "Нужен aghistory",
+    "desc": "Для экспорта диалогов и работы с сервером требуется утилита aghistory.",
+    "install_step": "Установите утилиту командой в терминале:",
+    "copy_cmd": "Скопировать команду",
+    "check_btn": "Проверить снова"
+  },
+  "missing_db": {
+    "title": "Каталог Antigravity не найден",
+    "desc": "Локальная база данных Antigravity (.gemini/antigravity) не обнаружена на компьютере.",
+    "check_btn": "Проверить снова"
+  },
+  "modal_id": {
+    "title": "Экспорт диалога по ID",
+    "desc": "Укажите UUID диалога для выгрузки, даже если он отсутствует в текущем списке:",
+    "placeholder": "Вставьте UUID диалога...",
+    "submit": "Экспортировать",
+    "cancel": "Отмена"
+  },
+  "modal_recover": {
+    "title": "Восстановить диалоги из .db",
+    "desc": "Сканирует файлы .db в каталоге conversations и перезагружает их через LanguageServer API.",
+    "warning": "Внимание: используйте только при повреждении или потере диалогов. Это действие может перезаписать данные активной сессии.",
+    "confirm": "Запустить восстановление",
+    "cancel": "Отмена"
+  },
+  "modal_server": {
+    "title": "Статус LanguageServer",
+    "loading": "Запрос данных о запущенном сервере...",
+    "show_log": "Показать в журнале",
+    "close": "Закрыть"
+  },
+  "modal_settings": {
+    "title": "Настройки",
+    "lang_label": "Язык интерфейса / Language",
+    "folder_label": "Папка сохранения по умолчанию",
+    "browse": "Обзор...",
+    "save": "Сохранить",
+    "cancel": "Отмена"
+  },
+  "modal_about": {
+    "title": "О программе",
+    "app_name": "Antigravity History Manager",
+    "version": "Версия 2.0.0 (Tauri v2)",
+    "desc": "Нативное приложение на Rust + WebView2 для локальной выгрузки и резервного копирования диалогов Google Antigravity.",
+    "offline_notice": "Полностью автономная работа: без внешних шрифтов, скриптов и сетевых запросов.",
+    "close": "Закрыть"
+  },
+  "toast": {
+    "copied_id": "UUID скопирован в буфер: {id}",
+    "copied_title": "Название скопировано",
+    "copied_log": "Журнал скопирован в буфер",
+    "folder_selected": "Выбрана папка: {path}",
+    "list_refreshed": "Список диалогов обновлен",
+    "stopped": "Процесс прерван",
+    "db_folder_opened": "Открыта папка баз данных",
+    "enter_id": "Пожалуйста, введите корректный ID диалога",
+    "saved": "Настройки сохранены"
+  },
+  "plural": {
+    "dialogues": {
+      "one": "{count} диалог",
+      "few": "{count} диалога",
+      "many": "{count} диалогов",
+      "other": "{count} диалогов"
+    },
+    "selected": {
+      "one": "Выбран {count} из {total}",
+      "few": "Выбрано {count} из {total}",
+      "many": "Выбрано {count} из {total}",
+      "other": "Выбрано {count} из {total}"
+    },
+    "export_selected_btn": {
+      "one": "Экспортировать выбранный (1)",
+      "few": "Экспортировать выбранные ({count})",
+      "many": "Экспортировать выбранные ({count})",
+      "other": "Экспортировать выбранные ({count})"
+    },
+    "saved_dialogues": {
+      "one": "Готово: 1 диалог сохранен",
+      "few": "Готово: {count} диалога сохранено",
+      "many": "Готово: {count} диалогов сохранено",
+      "other": "Готово: {count} диалогов сохранено"
+    }
+  }
+}

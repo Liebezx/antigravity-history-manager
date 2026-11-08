@@ -1,0 +1,36 @@
+--- discovery_orig.py	2026-11-01 15:35:00.000000000 +0000
++++ discovery.py	2026-11-07 20:06:00.000000000 +0000
+@@ -131,3 +131,34 @@
+         pass
+     return ports
+ 
++def find_all_endpoints(
++    servers: list[dict],
++    manual_port: Optional[int] = None,
++    manual_token: Optional[str] = None,
++) -> list[dict]:
++    """Discover all available (port, csrf, pid) endpoints across workspaces.
++
++    Returns:
++        [{"port": int, "csrf": str, "pid": int}, ...]
++    """
++    if manual_port and manual_token:
++        return [{"port": manual_port, "csrf": manual_token, "pid": 0}]
++
++    from antigravity_history.api import call_api
++
++    endpoints = []
++    seen_ports = set()
++
++    for srv in servers:
++        ports = find_ports(srv["pid"])
++        for port in ports:
++            if port in seen_ports:
++                continue
++            result = call_api(port, srv["csrf"], "GetAllCascadeTrajectories", timeout=5)
++            if result is not None:
++                endpoints.append({"port": port, "csrf": srv["csrf"], "pid": srv["pid"]})
++                seen_ports.add(port)
++                break
++
++    return endpoints

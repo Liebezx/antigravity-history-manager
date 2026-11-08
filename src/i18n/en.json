@@ -1,0 +1,188 @@
+{
+  "app": {
+    "title": "Antigravity History Manager",
+    "brand_name": "History Manager",
+    "section_title": "Conversations"
+  },
+  "card": {
+    "steps_label": "steps",
+    "untitled": "Untitled"
+  },
+  "status": {
+    "connected": "Connected to Antigravity",
+    "db_only": "Antigravity offline: local DB shown",
+    "cli_missing": "aghistory not found",
+    "antigravity_missing": "Database not found",
+    "demo": "Demo Mode",
+    "running": "Export in progress...",
+    "ready": "Ready"
+  },
+  "header": {
+    "lang_toggle_title": "Switch language (RU / EN)",
+    "log_btn": "Log",
+    "log_btn_title": "Open execution log (console)",
+    "menu_btn_title": "More options"
+  },
+  "menu": {
+    "server_status": "Server status",
+    "export_by_id": "Export by ID...",
+    "recover": "Recover from .db...",
+    "open_db_folder": "Open database folder",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "search": {
+    "placeholder": "Search by title or ID...",
+    "clear_title": "Clear search (Esc)",
+    "refresh_title": "Refresh conversations list (F5)"
+  },
+  "source": {
+    "live": "{count} · source: live",
+    "db_only": "{count} · source: from .db"
+  },
+  "table": {
+    "col_title": "CONVERSATION TITLE",
+    "col_steps": "STEPS",
+    "col_modified": "MODIFIED",
+    "select_all_title": "Select all (Ctrl+A)",
+    "copy_id_title": "Click to copy full UUID",
+    "empty_search": "No conversations match your search",
+    "empty_list": "No conversations found",
+    "loading": "Loading database...",
+    "no_title": "Untitled"
+  },
+  "bar": {
+    "selected_zero": "0 of {total}",
+    "select_all": "Select all",
+    "clear_selection": "Deselect all",
+    "folder_label": "Folder:",
+    "browse_title": "Choose destination export folder",
+    "open_folder_title": "Open folder in File Explorer",
+    "format_label": "Format:",
+    "format_all": "MD + JSON",
+    "format_md": "Markdown (.md)",
+    "format_json": "JSON (.json)",
+    "options": "Options",
+    "options_title": "Advanced export parameters",
+    "export_all_btn": "Export all ({count})",
+    "export_selected_btn": "Export selected ({count})"
+  },
+  "options": {
+    "title": "Export Options",
+    "organize_folders": "Organize into folders",
+    "organize_folders_desc": "Create a separate folder for each chat",
+    "thinking": "Include AI reasoning",
+    "thinking_desc": "Includes Chain-of-Thought and reasoning process",
+    "full": "Full diffs and output",
+    "full_desc": "Complete unabridged raw data dump",
+    "today": "Today only",
+    "today_desc": "Export only conversations from today",
+    "sound": "Sound on export finish",
+    "sound_desc": "Play a chime when export completes",
+    "sound_volume": "Volume",
+    "test_sound": "Test sound"
+  },
+  "progress": {
+    "exporting": "Exporting {current} of {total}...",
+    "exporting_all": "Exporting all conversations ({total})...",
+    "stopping": "Stopping process...",
+    "stop_btn": "Cancel",
+    "view_log": "View log",
+    "done": "Done: saved",
+    "done_open_folder": "Open folder",
+    "done_close": "Close",
+    "error": "Export failed",
+    "view_details": "View details"
+  },
+  "drawer": {
+    "title": "Execution Log",
+    "copy": "Copy",
+    "clear": "Clear",
+    "close": "Hide"
+  },
+  "missing_cli": {
+    "title": "aghistory Required",
+    "desc": "The aghistory utility is required to export chats and communicate with LanguageServer.",
+    "install_step": "Install the tool by running this command in your terminal:",
+    "copy_cmd": "Copy command",
+    "check_btn": "Check again"
+  },
+  "missing_db": {
+    "title": "Antigravity Directory Not Found",
+    "desc": "The local Antigravity database folder (.gemini/antigravity) was not detected on this system.",
+    "check_btn": "Check again"
+  },
+  "modal_id": {
+    "title": "Export Conversation by ID",
+    "desc": "Specify conversation UUID to export, even if not listed in the table:",
+    "placeholder": "Paste conversation UUID...",
+    "submit": "Export",
+    "cancel": "Cancel"
+  },
+  "modal_recover": {
+    "title": "Recover Conversations from .db",
+    "desc": "Scans .db files in the conversations directory and reloads them via LanguageServer API.",
+    "warning": "Warning: Use only if chats are missing or corrupted. This action may modify or overwrite active session data.",
+    "confirm": "Start Recovery",
+    "cancel": "Cancel"
+  },
+  "modal_server": {
+    "title": "LanguageServer Status",
+    "loading": "Querying LanguageServer endpoints...",
+    "show_log": "View in log",
+    "close": "Close"
+  },
+  "modal_settings": {
+    "title": "Settings",
+    "lang_label": "Interface language / Язык",
+    "folder_label": "Default export destination folder",
+    "browse": "Browse...",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "modal_about": {
+    "title": "About",
+    "app_name": "Antigravity History Manager",
+    "version": "Version 2.0.0 (Tauri v2)",
+    "desc": "A fast native application built with Rust and WebView2 for local backup and export of Google Antigravity conversations.",
+    "offline_notice": "Completely offline: zero telemetry, zero external fonts or scripts, zero network requests.",
+    "close": "Close"
+  },
+  "toast": {
+    "copied_id": "UUID copied to clipboard: {id}",
+    "copied_title": "Title copied to clipboard",
+    "copied_log": "Log copied to clipboard",
+    "folder_selected": "Folder selected: {path}",
+    "list_refreshed": "Conversations list refreshed",
+    "stopped": "Process cancelled",
+    "db_folder_opened": "Database folder opened",
+    "enter_id": "Please enter a valid conversation ID",
+    "saved": "Settings saved"
+  },
+  "plural": {
+    "dialogues": {
+      "one": "{count} conversation",
+      "few": "{count} conversations",
+      "many": "{count} conversations",
+      "other": "{count} conversations"
+    },
+    "selected": {
+      "one": "{count} of {total} selected",
+      "few": "{count} of {total} selected",
+      "many": "{count} of {total} selected",
+      "other": "{count} of {total} selected"
+    },
+    "export_selected_btn": {
+      "one": "Export selected (1)",
+      "few": "Export selected ({count})",
+      "many": "Export selected ({count})",
+      "other": "Export selected ({count})"
+    },
+    "saved_dialogues": {
+      "one": "Done: 1 conversation saved",
+      "few": "Done: {count} conversations saved",
+      "many": "Done: {count} conversations saved",
+      "other": "Done: {count} conversations saved"
+    }
+  }
+}

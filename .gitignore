@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+
+# Rust build target
+src-tauri/target/
+target/
+
+# Distribution, Installers & GitHub Releases
+dist/
+release/
+*.msi
+
+# Temporary, Verification & Backup Dirs
+tmp/
+verify/
+backup*/
+
+# Logs & Runtime State
+*.log
+logs/
+*.pid
+
+# Antigravity SQLite Databases & Cache
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite
+*.sqlite3
+EBWebView/
+data/
+
+# Export outputs & archives
+exports/
+test_export/
+archives/
+extracted_archives/
+
+# Environment & Secrets
+.env
+.env.*
+*.local
+auth*
+*token*
+*.key
+*.pem
+
+# Local offline dev toolchains & archives
+toolchain/
+*.zip
+
+# OS Artifacts
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Executables (exclude root and build executables, but keep bundled sidecar)
+*.exe
+!src-tauri/binaries/*.exe
+!app/src-tauri/binaries/*.exe

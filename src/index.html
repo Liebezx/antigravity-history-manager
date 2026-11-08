@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="app.title">Antigravity History Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow layers -->
+  <div class="ambient-glow glow-purple" aria-hidden="true"></div>
+  <div class="ambient-glow glow-mint" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <!-- Top Bar (68px) -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#C8FF3E" stroke="#C8FF3E" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="brand-name font-brand" data-i18n="app.brand_name">History Manager</div>
+      </div>
+
+      <div class="top-bar-right">
+        <!-- Status Indicator with Glowing Dot -->
+        <div class="status-indicator" id="status-indicator" tabindex="0">
+          <span class="status-dot dot-idle" id="status-dot"></span>
+          <span class="status-label font-ui" id="status-text" data-i18n="status.ready">Готов к работе</span>
+        </div>
+
+        <!-- Language Switcher Pill -->
+        <div class="lang-switcher" id="lang-switcher" data-i18n-title="header.lang_toggle_title" title="Переключить язык (RU / EN)">
+          <button type="button" class="lang-btn active font-ui" data-lang="ru">RU</button>
+          <span class="lang-divider">|</span>
+          <button type="button" class="lang-btn font-ui" data-lang="en">EN</button>
+        </div>
+
+        <!-- Log Drawer Toggle Button -->
+        <button type="button" class="btn-topbar font-ui" id="btn-toggle-log" data-i18n-title="header.log_btn_title" title="Открыть журнал выполнения">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          <span data-i18n="header.log_btn">Журнал</span>
+          <span class="log-unread-dot" id="log-unread-dot" style="display: none;"></span>
+        </button>
+
+        <!-- More Menu Button (...) -->
+        <button type="button" class="btn-topbar btn-icon-only" id="btn-more-menu" data-i18n-title="header.menu_btn_title" title="Дополнительные действия" aria-label="Меню действий">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="19" cy="12" r="1.5"/>
+            <circle cx="5" cy="12" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Subheader: Page Title, Live Badge, Search 340x46, Circular Refresh -->
+    <section class="page-subheader">
+      <div class="subheader-left">
+        <h1 class="page-title font-brand" data-i18n="app.section_title">Диалоги</h1>
+        <div class="source-indicator font-ui" id="source-indicator">
+          <span class="source-text" id="source-text">...</span>
+        </div>
+        <input type="checkbox" id="chk-master" style="display: none;" aria-hidden="true">
+      </div>
+
+      <div class="subheader-right">
+        <!-- Search Wrap 340x46 -->
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="input-search" class="search-input font-ui" data-i18n-placeholder="search.placeholder" placeholder="Поиск по названию или ID..." autocomplete="off" spellcheck="false">
+          <span class="search-kbd-badge font-mono">Ctrl F</span>
+          <button type="button" class="search-clear-btn" id="btn-clear-search" data-i18n-title="search.clear_title" title="Очистить поиск (Esc)">✕</button>
+        </div>
+
+        <!-- Circular Refresh Button (46px) -->
+        <button type="button" class="btn-refresh-circle" id="btn-refresh" data-i18n-title="search.refresh_title" title="Обновить список диалогов (F5)" aria-label="Обновить">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Workspace: Scrollable Cards Grid Container -->
+    <main class="content-workspace" id="table-scroll-container">
+      <div class="cards-grid" id="chats-grid" data-test="chats-tbody">
+        <!-- Rendered dynamically by app.js: 3 cols >= 1100, 2 cols 760-1100, 4 cols >= 1500 -->
+      </div>
+
+      <!-- Missing CLI View (Fallback) -->
+      <div class="empty-view-card" id="view-missing-cli" style="display: none;">
+        <div class="empty-view-icon error-glow">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 class="empty-view-title font-brand" data-i18n="missing_cli.title">Нужен aghistory</h2>
+        <p class="empty-view-desc font-ui" data-i18n="missing_cli.desc">Для экспорта диалогов и работы с сервером требуется утилита aghistory.</p>
+        <div class="cmd-box">
+          <code id="cmd-install-text" class="font-mono">pip install antigravity-history</code>
+          <button type="button" class="btn-copy-code" id="btn-copy-install-cmd" data-i18n-title="missing_cli.copy_cmd" title="Скопировать команду">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <button type="button" class="btn btn-secondary font-ui" id="btn-retry-cli" data-i18n="missing_cli.check_btn">Проверить снова</button>
+      </div>
+
+      <!-- Missing DB View (Fallback) -->
+      <div class="empty-view-card" id="view-missing-db" style="display: none;">
+        <div class="empty-view-icon warn-glow">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h2 class="empty-view-title font-brand" data-i18n="missing_db.title">Каталог Antigravity не найден</h2>
+        <p class="empty-view-desc font-ui" data-i18n="missing_db.desc">Локальная база данных Antigravity (.gemini/antigravity) не обнаружена на компьютере.</p>
+        <button type="button" class="btn btn-secondary font-ui" id="btn-retry-db" data-i18n="missing_db.check_btn">Проверить снова</button>
+      </div>
+    </main>
+
+    <!-- Bottom gradient fade overlay so cards scroll under floating bar -->
+    <div class="grid-fade-overlay" aria-hidden="true"></div>
+
+    <!-- Floating Bottom Action Bar (Centered Pill, Glassmorphism) -->
+    <footer class="bottom-bar-pill-wrap" id="bottom-bar">
+      <!-- Standard State -->
+      <div class="bar-pill bar-standard" id="bar-standard-mode">
+        <div class="pill-left">
+          <span class="selection-count font-ui" id="selection-count-text">0 из 0</span>
+          <button type="button" class="btn-link-action font-ui" id="btn-quick-select-all" data-i18n="bar.select_all">Выбрать все</button>
+          <button type="button" class="btn-link-action font-ui" id="btn-quick-clear-sel" data-i18n="bar.clear_selection" style="display: none;">Снять выбор</button>
+        </div>
+
+        <div class="pill-divider" aria-hidden="true"></div>
+
+        <div class="pill-center">
+          <!-- Folder Chip -->
+          <div class="pill-chip chip-folder" id="chip-folder-btn" data-i18n-title="bar.browse_title" title="Выбрать другую папку для экспорта">
+            <svg class="chip-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span class="chip-label font-ui" id="chip-folder-text">C:\...\antigravity_export</span>
+            <button type="button" class="chip-action-btn" id="btn-open-folder-icon" data-i18n-title="bar.open_folder_title" title="Открыть папку в Проводнике">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Format Chip -->
+          <div class="pill-chip chip-format" id="chip-format-btn">
+            <span class="chip-label font-ui" id="chip-format-text">MD + JSON</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+
+          <!-- Options Chip -->
+          <button type="button" class="pill-chip chip-options font-ui" id="btn-open-options" data-i18n-title="bar.options_title" title="Параметры выгрузки">
+            <svg class="chip-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span data-i18n="bar.options">Опции</span>
+          </button>
+        </div>
+
+        <div class="pill-right">
+          <!-- Main Primary Export Button (Solid Lime, 46px, 34px Glow) -->
+          <button type="button" class="btn-main-lime font-ui" id="btn-main-export">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            <span id="main-export-label">Экспортировать</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- In-Progress Mode (Replaces Pill During Export) -->
+      <div class="bar-pill bar-progress" id="bar-progress-mode" style="display: none;">
+        <div class="progress-pill-content">
+          <div class="progress-desc font-ui">
+            <span class="progress-spinner-lime"></span>
+            <span id="progress-status-text">Экспорт...</span>
+          </div>
+          <div class="progress-track-lime">
+            <div class="progress-bar-fill-lime" id="progress-bar-fill"></div>
+          </div>
+          <div class="progress-actions">
+            <button type="button" class="btn-link-action font-ui" id="btn-progress-view-log" data-i18n="progress.view_log">Показать журнал</button>
+            <button type="button" class="btn-pill-danger font-ui" id="btn-interrupt" data-i18n="progress.stop_btn">Прервать</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Success Mode -->
+      <div class="bar-pill bar-success" id="bar-success-mode" style="display: none;">
+        <div class="completed-message font-ui">
+          <span class="completed-icon-lime">✓</span>
+          <span id="success-status-text">Готово: сохранено</span>
+        </div>
+        <div class="completed-actions">
+          <button type="button" class="btn-pill-secondary font-ui" id="btn-success-open-dir" data-i18n="progress.done_open_folder">Открыть папку</button>
+          <button type="button" class="btn-pill-ghost font-ui" id="btn-success-close" data-i18n="progress.done_close">Закрыть</button>
+        </div>
+      </div>
+
+      <!-- Completed Error Mode -->
+      <div class="bar-pill bar-error" id="bar-error-mode" style="display: none;">
+        <div class="completed-message font-ui">
+          <span class="error-badge-icon">✕</span>
+          <span id="error-status-text" data-i18n="progress.error">Ошибка при экспорте</span>
+        </div>
+        <div class="completed-actions">
+          <button type="button" class="btn-pill-secondary font-ui" id="btn-error-view-details" data-i18n="progress.view_details">Показать детали</button>
+          <button type="button" class="btn-pill-ghost font-ui" id="btn-error-close" data-i18n="progress.done_close">Закрыть</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bottom Log Drawer (260px, Hidden by Default) -->
+    <aside class="log-drawer" id="log-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span class="drawer-title font-brand" data-i18n="drawer.title">Журнал выполнения</span>
+        </div>
+        <div class="drawer-actions font-ui">
+          <button type="button" class="btn btn-mini btn-ghost" id="btn-copy-log" data-i18n="drawer.copy">Копировать</button>
+          <button type="button" class="btn btn-mini btn-ghost" id="btn-clear-log" data-i18n="drawer.clear">Очистить</button>
+          <button type="button" class="btn btn-mini btn-ghost btn-icon-only" id="btn-close-drawer" data-i18n-title="drawer.close" title="Скрыть журнал">✕</button>
+        </div>
+      </div>
+      <div class="drawer-body font-mono" id="drawer-body"></div>
+    </aside>
+
+    <!-- Options Popover -->
+    <div class="popover-overlay" id="options-popover-overlay" style="display: none;">
+      <div class="popover-box" id="options-popover">
+        <div class="popover-header">
+          <span class="popover-title font-brand" data-i18n="options.title">Опции экспорта</span>
+          <button type="button" class="popover-close-btn" id="btn-close-options">✕</button>
+        </div>
+        <div class="popover-body font-ui">
+          <label class="popover-toggle">
+            <div class="toggle-text">
+              <span class="toggle-name"><span data-i18n="options.organize_folders">Раскладывать по папкам</span></span>
+              <span class="toggle-hint" data-i18n="options.organize_folders_desc">Создавать отдельную папку для каждого чата</span>
+            </div>
+            <input type="checkbox" id="opt-organize-folders" checked>
+            <span class="toggle-switch"></span>
+          </label>
+
+          <label class="popover-toggle">
+            <div class="toggle-text">
+              <span class="toggle-name"><span data-i18n="options.thinking">Включить рассуждения модели</span> <code class="flag-tag font-mono">--thinking</code></span>
+              <span class="toggle-hint" data-i18n="options.thinking_desc">Добавляет CoT и ход мыслей модели</span>
+            </div>
+            <input type="checkbox" id="opt-thinking" checked>
+            <span class="toggle-switch"></span>
+          </label>
+
+          <label class="popover-toggle">
+            <div class="toggle-text">
+              <span class="toggle-name"><span data-i18n="options.full">Полные diff и вывод</span> <code class="flag-tag font-mono">--full</code></span>
+              <span class="toggle-hint" data-i18n="options.full_desc">Полный дамп данных без сокращений</span>
+            </div>
+            <input type="checkbox" id="opt-full">
+            <span class="toggle-switch"></span>
+          </label>
+
+          <label class="popover-toggle">
+            <div class="toggle-text">
+              <span class="toggle-name"><span data-i18n="options.today">Только за сегодня</span> <code class="flag-tag font-mono">--today</code></span>
+              <span class="toggle-hint" data-i18n="options.today_desc">Выгружать диалоги только за сегодняшнее число</span>
+            </div>
+            <input type="checkbox" id="opt-today">
+            <span class="toggle-switch"></span>
+          </label>
+
+          <div class="popover-divider"></div>
+
+          <label class="popover-toggle">
+            <div class="toggle-text">
+              <span class="toggle-name"><span data-i18n="options.sound">Звук по окончании экспорта</span></span>
+              <span class="toggle-hint" data-i18n="options.sound_desc">Звуковой сигнал при завершении выгрузки</span>
+            </div>
+            <input type="checkbox" id="opt-sound-enabled" checked>
+            <span class="toggle-switch"></span>
+          </label>
+
+          <div class="popover-sound-row" id="sound-controls-row">
+            <div class="sound-slider-group">
+              <div class="sound-slider-header">
+                <span class="sound-label" data-i18n="options.sound_volume">Громкость</span>
+                <span class="sound-volume-val font-mono" id="sound-volume-val">80%</span>
+              </div>
+              <input type="range" min="0" max="100" value="80" class="range-slider font-ui" id="opt-sound-volume" aria-label="Volume">
+            </div>
+            <button type="button" class="btn btn-secondary btn-mini btn-test-sound font-ui" id="btn-test-sound">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sound-icon-svg" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <span data-i18n="options.test_sound">Проверить звук</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Format Dropdown Menu -->
+    <div class="dropdown-menu font-ui" id="format-dropdown" style="display: none;">
+      <div class="dropdown-item active" data-format="all">
+        <span class="item-icon">✓</span>
+        <span data-i18n="bar.format_all">MD + JSON</span>
+      </div>
+      <div class="dropdown-item" data-format="md">
+        <span class="item-icon"></span>
+        <span data-i18n="bar.format_md">Markdown (.md)</span>
+      </div>
+      <div class="dropdown-item" data-format="json">
+        <span class="item-icon"></span>
+        <span data-i18n="bar.format_json">JSON (.json)</span>
+      </div>
+    </div>
+
+    <!-- Header More Menu (...) -->
+    <div class="dropdown-menu font-ui" id="more-menu-dropdown" style="display: none;">
+      <div class="dropdown-item" id="menu-item-server">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+          <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+        <span data-i18n="menu.server_status">Статус сервера</span>
+      </div>
+      <div class="dropdown-item" id="menu-item-export-id">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span data-i18n="menu.export_by_id">Экспорт по ID...</span>
+      </div>
+      <div class="dropdown-item" id="menu-item-db-folder">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span data-i18n="menu.open_db_folder">Открыть папку баз данных</span>
+      </div>
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-item dropdown-danger" id="menu-item-recover">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span data-i18n="menu.recover">Восстановить из .db...</span>
+      </div>
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-item" id="menu-item-settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span data-i18n="menu.settings">Настройки</span>
+      </div>
+      <div class="dropdown-item" id="menu-item-about">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span data-i18n="menu.about">О программе</span>
+      </div>
+    </div>
+
+    <!-- Modals Container -->
+    <!-- 1. Modal: Export by ID -->
+    <div class="modal-backdrop" id="modal-export-id" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title font-brand" data-i18n="modal_id.title">Экспорт по ID</h3>
+          <button type="button" class="modal-close-btn" data-close-modal>✕</button>
+        </div>
+        <div class="modal-body font-ui">
+          <p class="modal-desc" data-i18n="modal_id.desc">Укажите UUID диалога для выгрузки:</p>
+          <input type="text" id="input-modal-id" class="text-input font-mono" data-i18n-placeholder="modal_id.placeholder" placeholder="Вставьте UUID..." spellcheck="false">
+        </div>
+        <div class="modal-footer font-ui">
+          <button type="button" class="btn btn-ghost" data-close-modal data-i18n="modal_id.cancel">Отмена</button>
+          <button type="button" class="btn btn-primary" id="btn-submit-export-id" data-i18n="modal_id.submit">Экспортировать</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Modal: Recover Confirmation (Honest & Safe) -->
+    <div class="modal-backdrop" id="modal-recover-dialog" style="display: none;">
+      <div class="modal-card modal-card-danger">
+        <div class="modal-header">
+          <h3 class="modal-title text-danger font-brand" data-i18n="modal_recover.title">Восстановить диалоги из .db</h3>
+          <button type="button" class="modal-close-btn" data-close-modal>✕</button>
+        </div>
+        <div class="modal-body font-ui">
+          <p class="modal-desc" data-i18n="modal_recover.desc">Сканирует файлы .db в каталоге conversations и перезагружает их через LanguageServer API.</p>
+          <div class="modal-alert-box">
+            <span class="alert-icon">⚠</span>
+            <span data-i18n="modal_recover.warning">Внимание: используйте только при повреждении или потере диалогов. Это действие может перезаписать данные активной сессии.</span>
+          </div>
+        </div>
+        <div class="modal-footer font-ui">
+          <button type="button" class="btn btn-ghost" data-close-modal data-i18n="modal_recover.cancel">Отмена</button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-recover" data-i18n="modal_recover.confirm">Запустить восстановление</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Modal: Server Status -->
+    <div class="modal-backdrop" id="modal-server-dialog" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title font-brand" data-i18n="modal_server.title">Статус LanguageServer</h3>
+          <button type="button" class="modal-close-btn" data-close-modal>✕</button>
+        </div>
+        <div class="modal-body font-ui">
+          <div class="server-output-view font-mono" id="server-status-content" data-i18n="modal_server.loading">Запрос данных...</div>
+        </div>
+        <div class="modal-footer font-ui">
+          <button type="button" class="btn btn-secondary" id="btn-server-open-log" data-i18n="modal_server.show_log">Показать в журнале</button>
+          <button type="button" class="btn btn-primary" data-close-modal data-i18n="modal_server.close">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Modal: Settings -->
+    <div class="modal-backdrop" id="modal-settings-dialog" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title font-brand" data-i18n="modal_settings.title">Настройки</h3>
+          <button type="button" class="modal-close-btn" data-close-modal>✕</button>
+        </div>
+        <div class="modal-body form-grid font-ui">
+          <div class="form-group">
+            <label class="form-label" data-i18n="modal_settings.lang_label">Язык интерфейса</label>
+            <div class="segmented-control" id="settings-lang-toggle">
+              <button type="button" class="segment-btn active" data-lang="ru">Русский (RU)</button>
+              <button type="button" class="segment-btn" data-lang="en">English (EN)</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="modal_settings.folder_label">Папка сохранения по умолчанию</label>
+            <div class="field-input-group">
+              <input type="text" id="settings-export-dir" class="text-input" spellcheck="false">
+              <button type="button" class="btn btn-secondary btn-compact" id="btn-settings-browse" data-i18n="modal_settings.browse">Обзор...</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer font-ui">
+          <button type="button" class="btn btn-ghost" data-close-modal data-i18n="modal_settings.cancel">Отмена</button>
+          <button type="button" class="btn btn-primary" id="btn-settings-save" data-i18n="modal_settings.save">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Modal: About -->
+    <div class="modal-backdrop" id="modal-about-dialog" style="display: none;">
+      <div class="modal-card modal-card-about">
+        <div class="modal-header">
+          <div class="brand-logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#0A0B10" stroke="#0A0B10" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <h3 class="modal-title font-brand" data-i18n="modal_about.app_name">Antigravity History Manager</h3>
+          <button type="button" class="modal-close-btn" data-close-modal>✕</button>
+        </div>
+        <div class="modal-body about-body font-ui">
+          <div class="about-version" data-i18n="modal_about.version">Версия 2.0.0 (Tauri v2)</div>
+          <p class="about-desc" data-i18n="modal_about.desc">Нативное приложение на Rust + WebView2 для локальной выгрузки и резервного копирования диалогов Google Antigravity.</p>
+          <div class="about-offline-box" data-i18n="modal_about.offline_notice">Полностью автономная работа: без внешних шрифтов, скриптов и сетевых запросов.</div>
+        </div>
+        <div class="modal-footer font-ui">
+          <button type="button" class="btn btn-primary" data-close-modal data-i18n="modal_about.close">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row/Card Context Menu -->
+    <div class="dropdown-menu font-ui" id="table-context-menu" style="display: none;">
+      <div class="dropdown-item" id="ctx-export-single">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        <span id="ctx-export-single-text">Экспортировать этот диалог</span>
+      </div>
+      <div class="dropdown-item" id="ctx-reveal-db">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span id="ctx-reveal-db-text">Показать файл .db в Проводнике</span>
+      </div>
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-item" id="ctx-copy-id">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span id="ctx-copy-id-text">Скопировать UUID</span>
+      </div>
+      <div class="dropdown-item" id="ctx-copy-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        </svg>
+        <span id="ctx-copy-title-text">Скопировать название</span>
+      </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <!-- Scripts: i18n -> api -> audio -> app -->
+  <script src="i18n.js"></script>
+  <script src="api.js"></script>
+  <script src="audio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

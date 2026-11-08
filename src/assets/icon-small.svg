@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Solid deep dark squircle base with solid crisp lime border for low-res rendering -->
+  <rect x="24" y="24" width="976" height="976" rx="220" ry="220" fill="#0A0B10" stroke="#C8FF3E" stroke-width="48"/>
+
+  <!-- Crisp, bold, high-contrast lightning bolt -->
+  <polygon points="570,110 300,530 480,530 400,914 724,460 544,460" fill="#C8FF3E"/>
+</svg>

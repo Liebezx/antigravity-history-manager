@@ -1,0 +1,14 @@
+{
+  "name": "antigravity-history-manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Antigravity History Manager - Tauri v2 Edition",
+  "scripts": {
+    "tauri": "tauri",
+    "i18n:check": "node scripts/check_i18n.js"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "puppeteer-core": "^25.16.0"
+  }
+}

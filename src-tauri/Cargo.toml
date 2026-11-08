@@ -1,0 +1,29 @@
+[package]
+name = "antigravity-history-manager"
+version = "1.0.0"
+description = "Antigravity History Manager - Tauri v2 Edition"
+authors = ["Antigravity Community"]
+edition = "2021"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+encoding_rs = "0.8"
+regex = "1"
+rfd = "0.15"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

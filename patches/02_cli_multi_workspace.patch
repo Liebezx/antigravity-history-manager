@@ -1,0 +1,22 @@
+--- cli_orig.py	2026-11-01 15:35:00.000000000 +0000
++++ cli.py	2026-11-07 20:20:00.000000000 +0000
+@@ -28,4 +28,5 @@
+ from antigravity_history.discovery import (
+     discover_language_servers,
++    find_all_endpoints,
+     find_working_endpoint,
+ )
+@@ -33,4 +34,5 @@
+ from antigravity_history.api import (
+     get_all_trajectories,
++    get_all_trajectories_merged,
+     get_trajectory_steps,
+ )
+@@ -62,3 +64,12 @@
+     log.print(f"[dim]  Found {len(servers)} language_server instance(s)[/dim]")
+-    endpoint = find_working_endpoint(servers)
++    endpoints = find_all_endpoints(servers)
++    if not endpoints:
++        err_console.print("[bold red]Failed to establish API connection to Antigravity LanguageServer.[/bold red]")
++        raise typer.Exit(1)
++    return endpoints

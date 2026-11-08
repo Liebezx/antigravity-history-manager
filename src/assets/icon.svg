@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C8FF3E" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#3DFFB5" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#C8FF3E" stop-opacity="0.25"/>
+    </linearGradient>
+    <filter id="boltGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Dark squircle base (radius ~22% = 220px) -->
+  <rect x="32" y="32" width="960" height="960" rx="220" ry="220" fill="#0A0B10" stroke="url(#borderGrad)" stroke-width="26"/>
+
+  <!-- Subtle ambient glow -->
+  <circle cx="512" cy="512" r="360" fill="#C8FF3E" opacity="0.07"/>
+
+  <!-- Glowing Lime Lightning Bolt -->
+  <polygon points="560,130 320,530 480,530 410,894 704,460 544,460" fill="#C8FF3E" filter="url(#boltGlow)"/>
+</svg>
